@@ -25,16 +25,17 @@ public class DataInitializer implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
+		// ตรวจสอบว่ามี SUPERADMIN อยู่ใน DB หรือยัง
 		if (userRepository.findByRole(Role.SUPERADMIN).isEmpty()) {
 			User admin = new User();
-			admin.setEmail("thitiwut.si@kkumail.com");
-			admin.setUsername("ธิติวุฒิ ศรีอมรรัตน์");
-			admin.setPassword(passwordEncoder.encode("123456789"));
-			admin.setPhone("0000000000"); // ✅ เพิ่มบรรทัดนี้
-			admin.setStudentid("0000000000"); // ถ้ามีฟิลด์นี้ใน entity
-			admin.setRole(Role.SUPERADMIN);
+			admin.setEmail("thitiwut.si@kkumail.com"); // ใช้ email แทน username
+			admin.setPhone("0973187245");
+			admin.setStudentid("663380213-6");
+			admin.setUsername("ธิติวุฒิ ศรีอมรรัตน์"); // optional
+			admin.setPassword(passwordEncoder.encode("123456789")); // รหัสผ่านเริ่มต้น
+			admin.setRole(Role.SUPERADMIN); // กำหนด role เป็น SUPERADMIN
 			userRepository.save(admin);
-			System.out.println("✅ Superadmin created: thitiwut.si@kkumail.com / 123456789");
+			System.out.println("Superadmin created: superadmin / password123");
 		} else {
 			System.out.println("Superadmin already exists, skipping creation.");
 		}
