@@ -12,31 +12,32 @@ import com.example.demo.repository.UserRepository;
 /**
  * DataInitializer
  * 
- * คลาสนี้จะรันตอน Spring Boot startup
- * ใช้สร้าง Superadmin ถ้า DB ยังไม่มี
+ * คลาสนี้จะรันตอน Spring Boot startup ใช้สร้าง Superadmin ถ้า DB ยังไม่มี
  */
 @Component
 public class DataInitializer implements CommandLineRunner {
 
-    @Autowired
-    private UserRepository userRepository;
+	@Autowired
+	private UserRepository userRepository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
-    @Override
-    public void run(String... args) throws Exception {
-        // ตรวจสอบว่ามี SUPERADMIN อยู่ใน DB หรือยัง
-        if (userRepository.findByRole(Role.SUPERADMIN).isEmpty()) {
-            User admin = new User();
-            admin.setEmail("thitiwut.si@kkumail.com"); // ใช้ email แทน username
-            admin.setUsername("ธิติวุฒิ ศรีอมรรัตน์"); // optional
-            admin.setPassword(passwordEncoder.encode("123456789")); // รหัสผ่านเริ่มต้น
-            admin.setRole(Role.SUPERADMIN); // กำหนด role เป็น SUPERADMIN
-            userRepository.save(admin);
-            System.out.println("Superadmin created: superadmin / password123");
-        } else {
-            System.out.println("Superadmin already exists, skipping creation.");
-        }
-    }
+	@Override
+	public void run(String... args) throws Exception {
+		if (userRepository.findByRole(Role.SUPERADMIN).isEmpty()) {
+			User admin = new User();
+			admin.setEmail("thitiwut.si@kkumail.com");
+			admin.setUsername("ธิติวุฒิ ศรีอมรรัตน์");
+			admin.setPassword(passwordEncoder.encode("123456789"));
+			admin.setPhone("0000000000"); // ✅ เพิ่มบรรทัดนี้
+			admin.setStudentid("0000000000"); // ถ้ามีฟิลด์นี้ใน entity
+			admin.setRole(Role.SUPERADMIN);
+			userRepository.save(admin);
+			System.out.println("✅ Superadmin created: thitiwut.si@kkumail.com / 123456789");
+		} else {
+			System.out.println("Superadmin already exists, skipping creation.");
+		}
+	}
+
 }
