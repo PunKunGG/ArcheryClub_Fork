@@ -52,9 +52,4 @@ public class AuthController {
 		return "login";
 	}
 
-	@GetMapping("/")
-	public String showWelcomePage() {
-		return "welcome";
-	}
-
 }

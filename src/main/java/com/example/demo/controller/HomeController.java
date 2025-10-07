@@ -8,24 +8,26 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class HomeController {
 
-    @GetMapping("/")
-    public String home() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	@GetMapping("/")
+	public String home() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        // --- บรรทัดสำคัญที่สุด ---
-        // เราจะพิมพ์ค่า Role ที่แท้จริงออกมาดูใน Console
-        //System.out.println(">>>>>> AUTHENTICATION DETAILS: " + authentication.getAuthorities() + " <<<<<<");
+		// 🔹 ถ้ายังไม่ได้ล็อกอินหรือเป็น anonymous ให้ไปหน้า welcome
+		if (authentication == null || !authentication.isAuthenticated()
+				|| authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ANONYMOUS"))) {
+			return "redirect:/welcome";
+		}
 
-        boolean isAdmin = authentication.getAuthorities().stream()
-            .anyMatch(grantedAuthority ->
-                grantedAuthority.getAuthority().equals("ADMIN") ||
-                grantedAuthority.getAuthority().equals("SUPERADMIN")
-            );
+		// 🔹 ถ้าเข้าสู่ระบบแล้ว เช็ก role ตามเดิม
+		boolean isAdmin = authentication.getAuthorities().stream()
+				.anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ADMIN")
+						|| grantedAuthority.getAuthority().equals("SUPERADMIN"));
 
-        if (isAdmin) {
-            return "redirect:/admin/dashboard";
-        } else {
-            return "redirect:/member/dashboard";
-        }
-    }
+		if (isAdmin) {
+			return "redirect:/admin/dashboard";
+		} else {
+			return "redirect:/member/dashboard";
+		}
+	}
+
 }
