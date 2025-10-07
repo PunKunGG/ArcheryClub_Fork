@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="th" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark" th:fragment="navbar">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">ระบบจัดการ</a>
+        
+        <div class="dropdown" sec:authorize="isAuthenticated()">
+            
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-list"></i> <span sec:authentication="name"></span>
+            </button>
+
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+
+                <li><a class="dropdown-item" th:href="@{/loan}">ยืม-คืนอุปกรณ์ว</a></li>
+                <li><a class="dropdown-item" th:href="@{/myLoanHistory}">ประวัติการยืม-คืน</a></li>
+
+                <li><hr class="dropdown-divider" sec:authorize="hasAnyRole('ADMIN', 'SUPERADMIN')"></li>
+
+                <li sec:authorize="hasAnyRole('ADMIN', 'SUPERADMIN')">
+                    <a class="dropdown-item" th:href="@{/admin/categories}">จัดการหมวดหมู่</a>
+                </li>
+                <li sec:authorize="hasAnyRole('ADMIN', 'SUPERADMIN')">
+                    <a class="dropdown-item" th:href="@{/admin/equips}">จัดการอุปกรณ์</a>
+                </li>
+				<li sec:authorize="hasAnyRole('ADMIN', 'SUPERADMIN')">
+				    <a class="dropdown-item" th:href="@{/admin/items}">จัดการคลังอุปกรณ์</a>
+				</li>
+				
+				<li sec:authorize="hasAnyRole('ADMIN', 'SUPERADMIN')">
+					<a class="dropdown-item" th:href="@{/admin/loans/pending-return}">ตรวจสอบการคืน</a>
+				</li>
+                <li><hr class="dropdown-divider" sec:authorize="hasRole('SUPERADMIN')"></li>
+                
+                <li sec:authorize="hasRole('SUPERADMIN')">
+                    <a class="dropdown-item" th:href="@{/admin/users}">เพิ่ม-ถอนคณะกรรมการ</a>
+                </li>
+
+                <li><hr class="dropdown-divider"></li>
+
+                <li>
+                    <form th:action="@{/logout}" method="post" class="d-inline">
+                        <button type="submit" class="dropdown-item">ออกจากระบบ</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+</body>
+</html>

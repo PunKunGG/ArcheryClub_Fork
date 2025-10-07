@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layouts/new_app :: ~{html} (content = ~{::content})}">
+
+<body>
+<div th:fragment="content" class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-10">
+
+            <!-- Success message -->
+            <div th:if="${successMessage}" class="alert alert-success" role="alert"
+                 th:text="${successMessage}"></div>
+            <!-- Error message (if you have one, e.g., from validation) -->
+            <div th:if="${errorMessage}" class="alert alert-danger" role="alert"
+                 th:text="${errorMessage}"></div>
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="fw-bold mb-0">จัดการไอเทมรายชิ้น</h3>
+                <div>
+                    <a th:href="@{/admin/items/add}" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>เพิ่มสต็อก
+                    </a>
+                    <a th:href="@{/admin/items/summary}" class="btn btn-outline-secondary">
+                        <i class="fas fa-tags me-2"></i>กลับไปหน้าสรุป
+                    </a>
+                </div>
+            </div>
+
+           
+
+            <!-- 1. สร้างฟอร์มใหญ่ครอบรายการทั้งหมด -->
+            <!-- Note: Spring Security often handles CSRF automatically with POST/PUT/DELETE forms -->
+			<form th:action="@{/admin/items/bulk-update}" method="post">
+			    <input type="hidden" name="_method" value="put"/>
+                <div class="card rounded-3 shadow-sm">
+                    <div class="card-body p-0">
+                        <ul class="list-group list-group-flush">
+                            <!-- Check if items list is not empty -->
+                            <th:block th:if="${!#lists.isEmpty(items)}">
+                                <li class="list-group-item d-flex align-items-center p-3" th:each="item : ${items}">
+                                    <!-- 2. เพิ่ม Checkbox -->
+                                    <div class="me-3">
+                                        <input class="form-check-input" type="checkbox" name="itemIds"
+                                               th:value="${item.id}"
+                                               th:disabled="${item.status.name() == 'BORROWED'}">
+                                        <!-- Note: Spring expects 'itemIds' as a List/Array in controller -->
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <span class="fw-bold fs-5" th:text="${item.assetCode}">Asset Code</span>
+                                        <p class="mb-1 text-muted" th:text="${item.equip.equipName}">Equip Name</p>
+                                        <p class="mb-1" th:text="${item.status.displayName}">Status</p>
+                                    </div>
+                                    <!-- ... Optional: Dropdown แก้ไขรายชิ้น (เหมือนเดิม) ... -->
+                                     <!-- Example of individual item dropdown menu -->
+                                    <div class="dropdown">
+                                        <button class="btn btn-outline-secondary btn-sm border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="fas fa-ellipsis-v"></i>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end">
+                                            <li><a class="dropdown-item" th:href="@{/admin/items/edit/{id}(id=${item.id})}">แก้ไข</a></li>
+                                            <li><a class="dropdown-item text-danger" th:href="@{/admin/items/delete/{id}(id=${item.id})}" onclick="return confirm('ยืนยันการลบไอเทมนี้?');">ลบ</a></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </th:block>
+
+                            <!-- If items list is empty -->
+                            <th:block th:if="${#lists.isEmpty(items)}">
+                                <li class="list-group-item text-center text-muted p-5">ยังไม่มีไอเทมในระบบ</li>
+                            </th:block>
+                        </ul>
+                    </div>
+
+                    <!-- 3. เพิ่มส่วนสำหรับ Bulk Actions ที่ท้าย Card -->
+                    <div class="card-footer bg-light p-3" th:if="${!#lists.isEmpty(items)}">
+                        <div class="d-flex align-items-center gap-3">
+                            <label for="bulk_status" class="form-label fw-bold mb-0">สำหรับรายการที่เลือก:</label>
+                            <select name="newStatus" id="bulk_status" class="form-select w-auto" required>
+                                <option value="" selected="selected" disabled="disabled">--เปลี่ยนสถานะเป็น--</option>
+								<option th:each="status : ${statuses}"
+								        th:value="${status.name()}"
+								        th:text="${status.displayName}">Status Label</option>
+
+                            </select>
+                            <button type="submit" class="btn btn-primary">ยืนยันการเปลี่ยนแปลง</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

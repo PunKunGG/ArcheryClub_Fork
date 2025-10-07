@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layouts/new_app :: ~{html} (content = ~{::content})}">
+
+<body>
+	<div th:fragment="content">
+		<div class="container mt-4">
+		       <div class="row justify-content-center">
+		           <div class="col-12 col-lg-10">
+		               <h3 class="fw-bold mb-4">ประวัติการยืม-คืนของฉัน</h3>
+
+		               <div class="card rounded-3 shadow-sm">
+		                   <div class="card-body p-0">
+		                       <ul class="list-group list-group-flush">
+		                           <li th:each="loan : ${loanPage.content}" class="list-group-item d-flex justify-content-between align-items-center p-3">
+		                               
+		                               <div class="flex-grow-1">
+		                                   <p class="fw-bold mb-1">
+		                                       <span th:text="${loan.assetCode}">รหัสครุภัณฑ์</span> 
+		                                       <span class="text-muted" th:text="'(' + ${loan.equipName} + ')'"></span>
+		                                   </p>
+		                                   <p class="small mb-0 text-muted">
+		                                       ยืมเมื่อ: <span th:text="${loan.formattedLoanDate}"></span>
+		                                       <span th:if="${loan.hasReturnDate}" th:text="'| คืนเมื่อ: ' + ${loan.formattedReturnDate}"></span>
+		                                   </p>
+		                               </div>
+
+		                               <div>
+		                                   <span th:class="${loan.statusCssClass}" th:text="${loan.statusText}">สถานะ</span>
+		                               </div>
+		                           </li>
+		                           
+		                           <li th:if="${loanPage.empty}" class="list-group-item text-center text-muted p-5">
+		                               คุณยังไม่มีประวัติการยืม-คืน
+		                           </li>
+		                       </ul>
+		                   </div>
+		               </div>
+
+		               <div class="mt-4" th:if="${loanPage.totalPages > 1}">
+		                   <div th:replace="~{fragments/pagination :: paginationbar(page=${loanPage})}"></div>
+		               </div>
+
+		           </div>
+		       </div>
+		   </div>
+	</div>
+</body>
+</html>

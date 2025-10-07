@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Page</title>
+</head>
+<body>
+    <h1>หน้าทดสอบ</h1>
+    <p>ถ้ารายการผลไม้แสดงข้างล่างนี้ได้ แสดงว่า Thymeleaf ทำงานถูกต้อง:</p>
+    <ul>
+        <li th:each="fruit : ${myFruits}" th:text="${fruit}"></li>
+    </ul>
+</body>
+</html>

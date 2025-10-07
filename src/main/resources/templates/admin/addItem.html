@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layouts/new_app :: html(content = ~{::content})}">
+
+<body>
+<div th:fragment="content">
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="card">
+                <div class="card-header"><h3 class="fw-bold mb-0">เพิ่มสต็อกจำนวนมาก (สร้างรหัสอัตโนมัติ)</h3></div>
+                <div class="card-body p-4">
+
+                    <form th:action="@{/admin/items/add}" th:object="${newItem}" method="POST">
+
+                        <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger">
+                            <ul class="mb-0">
+                                <li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>
+                            </ul>
+                        </div>
+
+					<!--	-->			
+					<div class="row">
+					    <div class="col-md-6 mb-3">
+					        <label for="equipment_select" class="form-label fw-bold">เลือกอุปกรณ์</label>
+					        <select id="equipment_select" 
+					                th:field="*{equipmentId}" 
+					                class="form-control searchable-dropdown" 
+					                required>
+					            <option value="">-- กรุณาเลือก --</option>
+					            <option th:each="equip : ${equip}" 
+					                    th:value="${equip.id}" 
+					                    th:text="${equip.equipName}" 
+					                    th:data-prefix="${equip.prefix}">
+					            </option>
+					        </select>
+					    </div>
+					</div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="prefix_display" class="form-label fw-bold">รหัสนำหน้า (Prefix)</label>
+                                <input type="text" id="prefix_display" class="form-control"  disabled>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="quantity" class="form-label fw-bold">จำนวนที่ต้องการเพิ่ม</label>
+                                <input type="number" th:field="*{quantity}" class="form-control" min="1" required>
+                            </div>
+                        </div>
+                        <hr>
+                        <button type="submit" class="btn btn-primary fw-bold">สร้างไอเทมทั้งหมด</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+	<script>
+	    const equipSelected = document.getElementById('equipment_select'); // ชื่อตรงกับ select
+	    const prefixDisplay = document.getElementById('prefix_display');   // ชื่อตรงกับ input
+
+	    equipSelected.addEventListener('change', function() {
+	        const selectedOption = this.options[this.selectedIndex];
+	        const prefix = selectedOption.getAttribute('data-prefix');
+	        prefixDisplay.value = prefix || '--';
+	    });
+	</script>
+
+</div>
+</body>
+</html>

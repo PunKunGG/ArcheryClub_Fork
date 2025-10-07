@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Register Archery Club KKU</title>
+
+    <!-- Google Fonts & Bootstrap CSS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+</head>
+<body class="bg-main">
+<main class="d-flex flex-column justify-content-center align-items-center text-center p-4">
+    <div class="form-container col-11 col-md-8 col-lg-5 text-center">
+
+        <!-- Logo -->
+        <img th:src="@{/img/LOGO KK AC 3.png}" alt="Club Logo" style="width: 80%; max-width: 520px;">
+
+        <h2 class="mb-4 text-dark">Create an account</h2>
+
+        <!-- ✅ ฟอร์ม Register ใช้ CreateUserRequest -->
+        <form th:action="@{/register}" th:object="${request}" method="post" class="text-start">
+
+            <!-- CSRF Token -->
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+            <!-- Username -->
+            <div class="mb-3">
+                <label for="username" class="form-label">ชื่อ-นามสกุล</label>
+                <input id="username" type="text" class="form-control" th:field="*{username}" placeholder="สมชาย ใจดี">
+                <div class="text-danger" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
+            </div>
+
+            <!-- Student ID -->
+            <div class="mb-3">
+                <label for="studentId" class="form-label">รหัสนักศึกษา</label>
+                <input id="studentId" type="text" class="form-control" th:field="*{studentId}" placeholder="xxxxxxxxx-x">
+                <div class="text-danger" th:if="${#fields.hasErrors('studentId')}" th:errors="*{studentId}"></div>
+            </div>
+
+            <!-- Phone -->
+            <div class="mb-3">
+                <label for="phone" class="form-label">เบอร์โทรศัพท์</label>
+                <input id="phone" type="text" class="form-control" th:field="*{phone}" placeholder="xxxxxxxxxx">
+                <div class="text-danger" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></div>
+            </div>
+
+            <!-- Email -->
+            <div class="mb-3">
+                <label for="email" class="form-label">อีเมล</label>
+                <input id="email" type="email" class="form-control" th:field="*{email}" placeholder="example@kkumail.com">
+                <div class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+            </div>
+
+            <!-- Password -->
+            <div class="mb-3">
+                <label for="password" class="form-label">รหัสผ่าน</label>
+                <input id="password" type="password" class="form-control" th:field="*{password}" placeholder="Enter your password">
+                <div class="text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+            </div>
+
+            <!-- Confirm Password (optional - not validated yet) -->
+            <div class="mb-3">
+                <label for="passwordConfirm" class="form-label">ยืนยันรหัสผ่าน</label>
+                <input id="passwordConfirm" type="password" class="form-control" name="passwordConfirm" placeholder="Retype password">
+            </div>
+
+            <!-- Success / Error Messages -->
+            <div th:if="${successMessage}" class="alert alert-success text-center" th:text="${successMessage}"></div>
+            <div th:if="${errorMessage}" class="alert alert-danger text-center" th:text="${errorMessage}"></div>
+
+            <!-- Register button -->
+            <div class="d-grid mt-4">
+                <button type="submit" class="btn btn-register btn-lg">Register</button>
+            </div>
+
+            <!-- Link to Login -->
+            <div class="mt-3 text-center">
+                <a th:href="@{/login}">Already have an account? Sign In</a>
+            </div>
+        </form>
+    </div>
+</main>
+</body>
+</html>

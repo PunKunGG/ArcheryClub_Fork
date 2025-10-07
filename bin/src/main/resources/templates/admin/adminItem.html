@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layouts/new_app :: ~{html} (content = ~{::content})}">
+
+<body>
+	<div class="container mt-4" th:fragment="content">
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-12 col-lg-10">
+
+                <div th:if="${successMessage}" class="alert alert-success" role="alert" th:text="${successMessage}"></div>
+                <div th:if="${errorMessage}" class="alert alert-danger" role="alert" th:text="${errorMessage}"></div>
+
+                <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+                    <h3 class="fw-bold mb-0">สรุปสต็อกอุปกรณ์</h3>
+                    <div class="d-flex gap-2">
+                        <a th:href="@{/admin/items/add}" class="btn btn-primary">
+                            <i class="fas fa-plus me-2"></i>เพิ่มอุปกรณ์ในคลัง
+                        </a>
+                       <!-- <a th:href="@{/admin/items/bulk-edit}" class="btn btn-outline-secondary">
+                            <i class="fas fa-tags me-2"></i>จัดการรายชิ้น -->
+                        </a>
+                    </div>
+                </div>
+
+                <div class="card rounded-3 shadow-sm">
+                    <div class="card-body p-0">
+                        <ul class="list-group list-group-flush">
+                            <th:block th:if="${!#lists.isEmpty(summary.equipments)}">
+                                <th:block th:each="equip : ${summary.equipments}">
+                                    <li class="list-group-item d-flex justify-content-between align-items-start p-3">
+                                        <div>
+                                            <span class="fw-bold fs-5" th:text="${equip.equipName}">Equipment Name</span>
+                                            <div class="small text-muted mt-1">
+                                                หมวดหมู่ : <span th:text="${equip.category.name}">Category</span> |
+                                                จำนวนทั้งหมด : <span class="fw-bold" th:text="${#lists.size(equip.items)}">0</span>
+                                            </div>
+                                            <div class="mt-2 d-flex flex-wrap gap-2">
+                                                <th:block th:each="status : ${summary.statuses}">
+                                                    <span class="badge rounded-pill"
+                                                          th:classappend="${status.name() == 'Available' ? 'bg-success' :
+                                                                           status.name() == 'Borrowed' ? 'bg-warning text-dark' :
+                                                                           status.name() == 'Maintenance' ? 'bg-info text-dark' :
+                                                                           status.name() == 'Lost' ? 'bg-danger' : 'bg-secondary'}"
+                                                          th:text="${status.displayName + ': ' + (summary.statusCounts[equip.id][status.name()] != null ? summary.statusCounts[equip.id][status.name()] : 0)}">
+                                                    </span>
+                                                </th:block>
+                                            </div>
+                                        </div>
+                                        <div class="dropdown">
+                                            <button class="btn btn-outline-secondary btn-sm border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </button>
+											<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="equipOptionsDropdown">
+											    <li><a class="dropdown-item" th:href="@{/admin/items/bulk-edit(equipId=${equip.id})}">ดู/จัดการรายชิ้น</a></li>
+											</ul>
+                                        </div>
+                                    </li>
+                                </th:block>
+                            </th:block>
+
+                            <th:block th:if="${#lists.isEmpty(summary.equipments)}">
+                                <li class="list-group-item text-center text-muted p-4">
+                                    <p>ยังไม่มีประเภทอุปกรณ์ในระบบ</p>
+                                    <a th:href="@{/admin/equips/add}" class="btn btn-sm btn-primary">สร้างประเภทอุปกรณ์ใหม่</a>
+                                </li>
+                            </th:block>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

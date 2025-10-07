@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layouts/new_app :: ~{html} (content = ~{::content})}">
+
+<body>
+	 <div th:fragment="content">
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-12 col-lg-8">
+
+				<div th:if="${successMessage}" class="alert alert-success m-3" role="alert" th:text="${successMessage}"></div>
+				<div th:if="${errorMessage}" class="alert alert-danger m-3" role="alert" th:text="${errorMessage}"></div>
+
+								
+                <div class="card-header display-5 fw-bold dashboard-header ms-2 p-2" th:text="#{Dashboard}">Dashboard</div>
+
+                <div class="card rounded-3 shadow-sm ms-3">
+                    <div class="card-body p-4">
+                        <div class="container p-2 rounded container-user" th:text="${dashboard.studentId} + ' ' + ${dashboard.username}"></div>
+                        <h3 class="p-2 h-position">
+                            <strong>ตำแหน่ง :</strong>
+                            <span th:text="${dashboard.roleDisplayName}"></span>
+                        </h3>
+                    </div>
+                </div>
+
+                <div th:if="${dashboard.hasLoans}" class="card rounded-3 shadow-sm mt-4">
+                    <div class="card-header fw-bold">ข้อมูลการยืม</div>
+                    <div class="card-body p-4">
+                        <p class="h5">
+                            <strong>อุปกรณ์ที่ยืม :</strong>
+                            <span th:text="${dashboard.loanedItemsSummary}"></span>
+                        </p>
+                    </div>
+                </div>
+                
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

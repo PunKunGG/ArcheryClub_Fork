@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layouts/new_app :: ~{html} (content = ~{::content})}">
+
+<body>
+	<div th:fragment="content">
+	    <div class="container mt-4">
+	        <div class="row justify-content-center">
+	            <div class="col-12 col-lg-10">
+        <h1>ถังขยะอุปกรณ์</h1>
+        <p>รายการอุปกรณ์ที่ถูกลบออกจากระบบ</p>
+
+        <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+        <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
+        <div class="card">
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ชื่ออุปกรณ์</th>
+                            <th>Prefix</th>
+                            <th>ถูกลบเมื่อ</th>
+                            <th>การกระทำ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="equip : ${deletedEquips}">
+                            <td th:text="${equip.equipName}">ชื่ออุปกรณ์</td>
+                            <td th:text="${equip.prefix}">Prefix</td>
+                            <td th:text="${#temporals.format(equip.deletedAt, 'dd/MM/yyyy HH:mm')}">เวลาที่ลบ</td>
+                            <td>
+                                <form th:action="@{/admin/equips/{id}/restore(id=${equip.id})}" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-success btn-sm">
+                                        <i class="fas fa-undo"></i> กู้คืน
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(deletedEquips)}">
+                            <td colspan="4" class="text-center text-muted">ไม่มีอุปกรณ์ในถังขยะ</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <a th:href="@{/admin/equips}" class="btn btn-secondary mt-3">กลับไปหน้ารายการอุปกรณ์</a>
+    </div>
+</div>
+</body>
+</html>

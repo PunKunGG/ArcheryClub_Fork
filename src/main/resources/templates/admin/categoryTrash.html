@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layouts/new_app :: ~{html} (content = ~{::content})}">
+
+<body>
+	<div th:fragment="content">
+	    <div class="container mt-4">
+	        <div class="row justify-content-center">
+	            <div class="col-12 col-lg-10">
+        <h1 class="display-5 fw-bold dashboard-header">ถังขยะหมวดหมู่</h1>
+        <p>รายการหมวดหมู่ที่ถูกลบออกจากระบบ</p>
+
+        <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+        <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
+        <div class="card rounded-3 shadow-sm">
+            <div class="card-body">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ชื่อหมวดหมู่</th>
+                            <th>ถูกลบเมื่อ</th>
+                            <th class="text-center">การกระทำ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="category : ${deletedCategories}">
+                            <td th:text="${category.name}">ชื่อหมวดหมู่</td>
+                            <td th:text="${#temporals.format(category.deletedAt, 'dd/MM/yyyy HH:mm')}">เวลาที่ลบ</td>
+                            <td class="text-center">
+                                <form th:action="@{/admin/categories/{id}/restore(id=${category.id})}" method="post" class="d-inline"
+                                      onsubmit="return confirm('คุณแน่ใจหรือไม่ว่าต้องการกู้คืนหมวดหมู่นี้?');">
+                                    <button type="submit" class="btn btn-success btn-sm">
+                                        <i class="fas fa-undo"></i> กู้คืน
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(deletedCategories)}">
+                            <td colspan="3" class="text-center text-muted py-3">ไม่มีหมวดหมู่ในถังขยะ</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <a th:href="@{/admin/categories}" class="btn btn-secondary mt-3">
+            <i class="fas fa-arrow-left me-2"></i>กลับไปหน้ารายการหมวดหมู่
+        </a>
+    </div>
+</div>
+</body>
+</html>

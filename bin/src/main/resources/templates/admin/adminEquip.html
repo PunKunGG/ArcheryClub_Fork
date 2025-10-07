@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layouts/new_app :: ~{html} (content = ~{::content})}">
+
+<body>
+	<div class="container mt-4" th:fragment="content">
+		<div class="row justify-content-center">
+			<div class="col-12 col-lg-10">
+
+				<div th:if="${successMessage}" class="alert alert-success" role="alert">
+					<span th:text="${successMessage}"></span>
+				</div>
+				<div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+					<span th:text="${errorMessage}"></span>
+				</div>
+
+				<div class="row justify-content-center mt-4">
+					<div class="col-12 col-lg-8 d-flex justify-content-between align-items-center">
+						<div class="d-flex align-items-center announcement-box flex-grow-1">
+							<span class="fw-bold fs-4 ms-4">จัดการอุปกรณ์</span>
+						</div>
+						<a th:href="@{/admin/equips/add}" class="btn btn-add-equip ms-3">
+							<i class="fas fa-plus"></i>
+						</a>
+						<a th:href="@{/admin/categories}" class="btn btn-primary fw-bold">
+							จัดการหมวดหมู่
+						</a>
+						<a th:href="@{/admin/equips/trash}" class="btn btn-outline-secondary">
+						            <i class="fas fa-trash"></i> ดูถังขยะ
+						        </a>
+					</div>
+				</div>
+
+				<div class="card-body">
+					<ul class="list-group list-group-flush">
+						<th:block th:if="${!#lists.isEmpty(equips)}">
+							<li th:each="equip : ${equips}" class="list-group-item d-flex justify-content-between align-items-center">
+								<div>
+									<span class="fw-bold" th:text="${equip.equipName}"></span>
+
+									<div class="small text-muted">
+										หมวดหมู่ : <span th:text="${equip.category.name}"></span>
+									</div>
+
+									<div class="small text-muted">
+										รหัสอุปกรณ์ : <span th:text="${equip.prefix}"></span>
+									</div>
+								</div>
+
+								<div class="dropdown float-end">
+									<button class="btn btn-light btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+										<i class="fas fa-ellipsis-v"></i> </button>
+									<ul class="dropdown-menu">
+										<li>
+											<a class="dropdown-item" th:href="@{/admin/equips/{id}/edit(id=${equip.id})}">
+												<i class="fas fa-edit me-2"></i>แก้ไข
+											</a>
+										</li>
+										<li>
+											<form th:action="@{/admin/equips/{id}/delete(id=${equip.id})}" method="POST" onsubmit="return confirm('คุณแน่ใจหรือไม่ว่าต้องการลบอุปกรณ์นี้?');">
+												<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+												<button type="submit" class="dropdown-item text-danger">
+													<i class="fas fa-trash me-2"></i>ลบ
+												</button>
+											</form>
+										</li>
+									</ul>
+								</div>
+							</li>
+						</th:block>
+						
+						<th:block th:if="${#lists.isEmpty(equips)}">
+							<li class="list-group-item text-muted">ยังไม่มีอุปกรณ์</li>
+						</th:block>
+					</ul>
+				</div>
+
+			</div>
+		</div>
+	</div>
+</body>
+</html>

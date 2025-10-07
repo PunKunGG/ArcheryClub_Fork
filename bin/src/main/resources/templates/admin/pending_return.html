@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layouts/new_app :: ~{html} (content = ~{::content})}">
+
+<body>
+	<div th:fragment="content">
+
+<div layout:fragment="new_content">
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-10">
+
+            <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}">
+                </div>
+
+            <h3 class="fw-bold mb-4">รายการรอตรวจสอบการคืน</h3>
+
+            <div class="card rounded-3 shadow-sm">
+                <div class="card-body p-0">
+                    <div th:if="${!loans.isEmpty()}">
+                        <ul class="list-group list-group-flush">
+                            <li th:each="loan : ${loans}" class="list-group-item d-flex justify-content-between align-items-center p-3 gap-3">
+                                
+                                <div class="flex-grow-1">
+                                    <span class="fw-bold fs-5" th:text="${loan.assetCode}">รหัสครุภัณฑ์</span>
+                                    <p class="text-muted mb-1" th:text="${loan.equipmentName}">ชื่ออุปกรณ์</p>
+                                    <p class="mb-0">
+                                        <i class="fas fa-user me-2"></i>ผู้ยืม: <strong th:text="${loan.userName}">ชื่อผู้ยืม</strong>
+                                    </p>
+                                    <p class="mb-0 small text-primary">
+                                        <i class="fas fa-clock me-2"></i>เวลาที่แจ้งคืน: <span th:text="${loan.formattedPendingReturnAt}">1 Jan 2025 10:00 น.</span>
+                                    </p>
+                                </div>
+
+                                <div class="text-center">
+                                    <div th:if="${loan.hasReturnPhoto}">
+                                        <a th:href="${loan.returnPhotoUrl}" target="_blank" title="คลิกเพื่อดูภาพขยาย">
+                                            <img th:src="${loan.returnPhotoUrl}" alt="Return Photo" class="img-thumbnail" style="width: 100px; height: 100px; object-fit: cover;">
+                                        </a>
+                                    </div>
+                                    <div th:unless="${loan.hasReturnPhoto}">
+                                        <span class="text-muted">ไม่มีรูปภาพ</span>
+                                    </div>
+                                </div>
+
+                                <div>
+									<form th:action="@{/admin/loans/{id}/confirm-return(id=${loan.id})}" method="POST">
+									                                           <button type="submit" class="btn btn-primary"
+									                                                   th:data-asset-code="${loan.assetCode}" 
+									                                                   onclick="return showConfirmDialog(this)">
+									                                               <i class="fas fa-check-double me-2"></i>ยืนยัน
+									                                           </button>
+									                                       </form>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div th:if="${loans.isEmpty()}">
+                         <div class="list-group-item text-center text-muted p-5">
+                            ไม่มีรายการรอตรวจสอบในขณะนี้
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+
+ <script th:inline="javascript">
+    function showConfirmDialog(button) {
+        // 1. ดึงข้อมูล assetCode จาก data- attribute ของปุ่มที่ถูกคลิก
+        const assetCode = button.getAttribute('data-asset-code');
+
+        // 2. สร้างข้อความสำหรับยืนยัน
+        const message = 'ยืนยันการรับคืน ' + assetCode + '?';
+
+        // 3. แสดงกล่องโต้ตอบ confirm แล้วคืนค่า true/false
+        // ถ้าผู้ใช้กด OK จะคืนค่า true และ form จะถูก submit
+        // ถ้าผู้ใช้กด Cancel จะคืนค่า false และ form จะไม่ถูก submit
+        return confirm(message);
+    }
+</script>
+
+</body>
+</html>

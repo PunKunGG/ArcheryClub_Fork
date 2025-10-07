@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="th" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layouts/new_app :: ~{html} (content = ~{::content})}">
+
+<body>
+<div th:fragment="content">
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-12 col-lg-8">
+				<h3 class="fw-bold mb-3">ยืม-คืน อุปกรณ์</h3>
+                <!-- แสดงข้อความสำเร็จ -->
+                <div th:if="${successMessage}" class="alert alert-success" role="alert" 
+                     th:text="${successMessage}"></div>
+
+					 <form th:action="@{/loan}" method="get" class="mb-3">
+					     <div class="input-group">
+					         <select name="categoryId" class="form-select" onchange="this.form.submit()">
+					             <option value="">-- เลือกดูทุกหมวดหมู่ --</option>
+					             <th:block th:each="cat : ${categories}">
+					                 <option th:value="${cat.id}" 
+					                         th:text="${cat.name}"
+					                         th:selected="${cat.id == selectedCategoryId}">
+					                 </option>
+					             </th:block>
+					         </select>
+					         <button type="submit" class="btn btn-primary">ค้นหา</button>
+					     </div>
+					 </form>
+					 
+                <div class="card rounded-3 shadow-sm">
+                    <div class="card-body p-0">
+                        <ul class="list-group list-group-flush">
+
+                            <!-- วนลูปแสดง item -->
+							<li class="list-group-item d-flex align-items-center p-3"
+							    th:each="item : ${items}">
+
+							    <div class="flex-grow-1">
+							        <span class="fw-bold fs-5" th:text="${item.assetCode}"></span>
+							        <p class="mb-1 text-muted" th:text="${item.equipName}"></p>
+							    </div>
+
+							    <div>
+
+									<form th:if="${item.canBorrow}"
+									      th:action="@{/loan/store}"
+									      method="post"
+									      th:attr="onsubmit=|return confirm('คุณต้องการยืม ${item.assetCode} ใช่หรือไม่?');|">
+									    <input type="hidden" name="item_id" th:value="${item.id}">
+									    <button type="submit" class="btn btn-success btn-sm">ยืม</button>
+									</form>
+
+
+									<form th:if="${item.canRequestReturn}"
+									      th:action="@{/loan/requestReturn/{id}(id=${item.loanId})}"
+									      method="post" enctype="multipart/form-data">
+
+									    <div class="input-group input-group-sm">
+									        <input type="file" name="return_photo" class="form-control" required>
+									        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+									        <button type="submit" class="btn btn-info">แจ้งคืน</button>
+									    </div>
+									</form>
+
+							        <span th:if="${item.isPendingReturn}"
+							              class="badge bg-secondary">รอกรรมการตรวจสอบ</span>
+
+							        <button th:if="${item.isLoanedByOther}"
+							                class="btn btn-warning btn-sm text-dark" disabled
+							                th:text="${item.statusDisplayName}">
+							        </button>
+							    </div>
+							    </li>
+
+                            <!-- ถ้าไม่มี item -->
+                            <li th:if="${#lists.isEmpty(items)}"
+                                class="list-group-item text-center text-muted p-5">
+                                ไม่มีไอเทมพร้อมให้ยืม
+                            </li>
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
